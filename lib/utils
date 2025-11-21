@@ -20,9 +20,8 @@ sort_semver() {
 
 list_github_semver_tags() {
 	git ls-remote --tags --refs "$REPO_URL" \
-		| grep -o "refs/tags/v.*" \
+		| grep -o "refs/tags/.*" \
 		| cut -d/ -f3- \
-		| sed "s/^v//" \
 		| grep -oE '^[0-9]+\.[0-9]+\.[0-9]+$' \
 		| uniq
 }
@@ -59,7 +58,7 @@ get_target_triples() {
 	case "$platform" in
 		Darwin)
 			case "$arch" in
-				aarch64 | arm64) targets=("aarch64-apple-darwin" "x86_64-apple-darwin") ;; # Rosetta
+				aarch64 | arm64) targets=("aarch64-apple-darwin") ;; # Rosetta
 				x86_64) targets=("x86_64-apple-darwin") ;;
 				*) fail "Incompatible darwin architecture." ;;
 			esac
