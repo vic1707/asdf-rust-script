@@ -13,3 +13,22 @@ jobs:
         steps:
             - uses: actions/checkout@v4.1.7
             - run: ./tests/banned-commands.sh
+
+    install:
+        name: Try installing latest
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [ubuntu-latest, macos-latest]
+        steps:
+            - uses: actions/checkout@v4.1.7
+            - uses: asdf-vm/actions/setup@v4
+            - name: extract tool-name
+              id: tool-name
+              run: |
+                  source lib/utils
+                  echo "tool_name=$TOOL_NAME" >> $GITHUB_OUTPUT
+            - name: Add local plugin
+              run: asdf plugin add ${{ steps.tool-name.outputs.tool_name }} .
+            - name: Install latest
+              run: asdf install ${{ steps.tool-name.outputs.tool_name }} latest
