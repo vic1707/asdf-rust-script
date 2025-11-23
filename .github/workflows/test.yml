@@ -46,7 +46,7 @@ jobs:
               shell: bash
               run: |
                   source lib/utils
-                  echo "tool_name=$TOOL_NAME" >> $GITHUB_OUTPUT
+                  echo "tool_name=$TOOL_NAME" >> "$GITHUB_OUTPUT"
 
             - name: Test install
               # v4.0.1 fails: <https://github.com/asdf-vm/actions/issues/609>

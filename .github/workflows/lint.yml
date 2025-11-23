@@ -9,8 +9,8 @@ on:
 permissions: {}
 
 jobs:
-    shellcheck:
-        name: shellcheck
+    lints:
+        name: linters
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
