@@ -82,24 +82,32 @@ get_target_triples() {
 	platform=$(uname -s)
 	arch=$(uname -m)
 
+	triples=""
+	append() {
+		[ -z "$triples" ] && triples="$1" || triples="$triples $1"
+	}
+
 	case "$platform" in
 		Darwin)
 			case "$arch" in
-				aarch64 | arm64) targets=("aarch64-apple-darwin" "x86_64-apple-darwin") ;; # both because Rosetta
-				x86_64) targets=("x86_64-apple-darwin") ;;
-				*) fail "Incompatible darwin architecture." ;;
+				arm64|aarch64)
+					append "aarch64-apple-darwin"
+					append "x86_64-apple-darwin" # Rosetta fallback
+					;;
+				x86_64) append "x86_64-apple-darwin";;
+				*) fail "Incompatible Darwin architecture: $arch" ;;
 			esac
 			;;
 		Linux)
 			case "$arch" in
-				aarch64 | arm64) base_triple="aarch64-unknown-linux" ;;
-				armv7l | armv7) base_triple="armv7-unknown-linux" ;;
-				x86_64) base_triple="x86_64-unknown-linux" ;;
-				*) fail "Incompatible linux architecture." ;;
+				aarch64 | arm64) base="aarch64-unknown-linux" ;;
+				armv7l | armv7) base="armv7-unknown-linux" ;;
+				x86_64) base="x86_64-unknown-linux" ;;
+				*) fail "Incompatible Linux architecture: $arch" ;;
 			esac
 
-			libc_sufix=""
-			[ "$arch" = "armv7" ] || [ "$arch" = "armv7l" ] && libc_sufix="eabihf"
+			libc_suffix=""
+			[ "$arch" = "armv7" ] || [ "$arch" = "armv7l" ] && libc_suffix="eabihf"
 
 			# Detect libc libraries for musl and glibc
 			musl_lib="/lib/ld-musl-$arch.so.1"
@@ -111,20 +119,21 @@ get_target_triples() {
 				armv7l | armv7) glibc_lib="/lib/ld-linux-armhf.so.3" ;;
 			esac
 
-			[ -f "$musl_lib" ]
-			musl_exists=$?
-			[ -f "$glibc_lib" ]
-			glibc_exists=$?
+			musl=1; [ -f "$musl_lib" ] && musl=0
+			glibc=1; [ -f "$glibc_lib" ] && glibc=0
 
-			case "$musl_exists:$glibc_exists" in
-				0:0) targets=("$base_triple-musl$libc_sufix" "$base_triple-gnu$libc_sufix") ;;
-				0:1) targets=("$base_triple-musl$libc_sufix") ;;
-				1:0) targets=("$base_triple-gnu$libc_sufix") ;;
+			case "$musl:$glibc" in
+				0:0)
+					append "${base}-musl${libc_suffix}"
+					append "${base}-gnu${libc_suffix}"
+					;;
+				0:1) append "${base}-musl${libc_suffix}" ;;
+				1:0) append "${base}-gnu${libc_suffix}" ;;
 				1:1) fail "Neither musl nor glibc detected." ;;
 			esac
 			;;
-		*) fail "Incompatible platform." ;;
+		*) fail "Unsupported platform: $platform" ;;
 	esac
 
-	printf '%s ' "${targets[@]}"
+	printf '%s' "$triples"
 }
