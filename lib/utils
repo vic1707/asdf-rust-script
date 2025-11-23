@@ -71,7 +71,7 @@ download() {
 	if which curl > /dev/null; then
 		curl -fsSL ${GITHUB_API_TOKEN:+-H "Authorization: token $GITHUB_API_TOKEN"} "$url"
 	elif which wget > /dev/null; then
-		wget -q ${GITHUB_API_TOKEN:+--header="Authorization: token $GITHUB_API_TOKEN"} "$url"
+		wget -q -O- ${GITHUB_API_TOKEN:+--header="Authorization: token $GITHUB_API_TOKEN"} "$url"
 	else
 		fail "Error: Neither curl nor wget is available."
 	fi
