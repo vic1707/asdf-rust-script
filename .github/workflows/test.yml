@@ -29,7 +29,7 @@ jobs:
         steps:
             - uses: actions/checkout@v5.0.1
             - if: ${{ matrix.container == 'alpine:latest' }}
-              run: apk add --no-cache bash
+              run: apk add --no-cache bash git
             - if: ${{ matrix.os == 'ubuntu-latest' && !matrix.container }}
               run: sudo apt install --update -y git curl
             - name: extract tool-name
