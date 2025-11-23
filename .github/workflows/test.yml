@@ -39,6 +39,6 @@ jobs:
                   source lib/utils
                   echo "tool_name=$TOOL_NAME" >> $GITHUB_OUTPUT
             - name: Test install
-              uses: asdf-vm/actions/plugin-test@v3.0.2
+              uses: asdf-vm/actions/plugin-test@v3.0.2 # v4.0.1 fails: <https://github.com/asdf-vm/actions/issues/609>
               with:
                   command: ${{ steps.tool-name.outputs.tool_name }} --version
