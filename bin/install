@@ -2,7 +2,7 @@
 
 set -euo pipefail
 set -o errtrace
-trap 'echo "❌ Error on line $LINENO"' ERR
+trap 'say "❌ Error on line $LINENO"' ERR
 
 # shellcheck source=lib/utils
 . "$(dirname "$0")/../lib/utils"

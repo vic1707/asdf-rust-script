@@ -4,9 +4,9 @@ set -euo pipefail
 
 TOOL_NAME="rust-script"
 REPO_URL="https://github.com/fornwall/rust-script"
-RELEASE_BASE_URL="$REPO_URL/releases/download/$ASDF_INSTALL_VERSION"
 
 # dl_link() {
+#	RELEASE_BASE_URL="$REPO_URL/releases/download/$ASDF_INSTALL_VERSION"
 # 	DL_FILE="$TOOL_NAME-$(get_arch).tar.gz"
 
 # 	URL="$RELEASE_BASE_URL/$DL_FILE"
@@ -16,6 +16,7 @@ RELEASE_BASE_URL="$REPO_URL/releases/download/$ASDF_INSTALL_VERSION"
 
 # Mostly used for rust tools
 dl_link() {
+	RELEASE_BASE_URL="$REPO_URL/releases/download/$ASDF_INSTALL_VERSION"
 	for triple in $(get_target_triples); do
 		DL_FILE="$TOOL_NAME-$triple.tar.gz"
 		TEST_URL="$RELEASE_BASE_URL/$DL_FILE"
