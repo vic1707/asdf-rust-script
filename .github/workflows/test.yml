@@ -17,6 +17,7 @@ jobs:
     install:
         name: Test install latest
         strategy:
+            fail-fast: false
             matrix:
                 include:
                     - os: ubuntu-latest
