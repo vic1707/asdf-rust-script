@@ -27,7 +27,6 @@ jobs:
         container: ${{ matrix.container }}
         steps:
             - uses: actions/checkout@v5.0.1
-            - uses: asdf-vm/actions/setup@v4.0.1
             - name: extract tool-name
               id: tool-name
               run: |
