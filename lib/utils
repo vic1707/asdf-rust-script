@@ -64,8 +64,7 @@ is_valid() {
 }
 
 download() {
-	out_file="$1"
-	url="$2"
+	url="$1"
 
 	if which curl > /dev/null; then
 		curl -fsSL ${GITHUB_API_TOKEN:+-H "Authorization: token $GITHUB_API_TOKEN"} "$url"
