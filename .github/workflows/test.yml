@@ -34,6 +34,7 @@ jobs:
               run: sudo apt install --update -y git curl
             - name: extract tool-name
               id: tool-name
+              shell: bash
               run: |
                   source lib/utils
                   echo "tool_name=$TOOL_NAME" >> $GITHUB_OUTPUT
