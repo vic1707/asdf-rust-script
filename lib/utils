@@ -4,6 +4,32 @@ set -euo pipefail
 
 TOOL_NAME="rust-script"
 REPO_URL="https://github.com/fornwall/rust-script"
+RELEASE_BASE_URL="$REPO_URL/releases/download/$ASDF_INSTALL_VERSION"
+
+# dl_link() {
+# 	DL_FILE="$TOOL_NAME-$(get_arch).tar.gz"
+
+# 	URL="$RELEASE_BASE_URL/$DL_FILE"
+
+# 	printf "%s" "$URL"
+# }
+
+# Mostly used for rust tools
+dl_link() {
+	for triple in $(get_target_triples); do
+		DL_FILE="$TOOL_NAME-$triple.tar.gz"
+		TEST_URL="$RELEASE_BASE_URL/$DL_FILE"
+
+		! is_valid "$TEST_URL" && {
+			say "Tried downloading with $TEST_URL but it doesn't exist."
+			continue
+		}
+		URL="$TEST_URL"
+		break
+	done
+
+	printf "%s" "$URL"
+}
 
 say() {
 	printf "[asdf-$TOOL_NAME]: %s\n" "$*"
@@ -20,8 +46,8 @@ sort_semver() {
 
 list_github_semver_tags() {
 	git ls-remote --tags --refs "$REPO_URL" \
-		| grep -o "refs/tags/.*" \
 		| cut -d/ -f3- \
+		| sed "s/^v//" \
 		| grep -oE '^[0-9]+\.[0-9]+\.[0-9]+$' \
 		| uniq
 }
@@ -42,9 +68,9 @@ download() {
 	url="$2"
 
 	if which curl > /dev/null; then
-		curl -fsSL ${GITHUB_API_TOKEN:+-H "Authorization: token $GITHUB_API_TOKEN"} -o "$out_file" "$url"
+		curl -fsSL ${GITHUB_API_TOKEN:+-H "Authorization: token $GITHUB_API_TOKEN"} "$url"
 	elif which wget > /dev/null; then
-		wget -q ${GITHUB_API_TOKEN:+--header="Authorization: token $GITHUB_API_TOKEN"} -O "$out_file" "$url"
+		wget -q ${GITHUB_API_TOKEN:+--header="Authorization: token $GITHUB_API_TOKEN"} "$url"
 	else
 		fail "Error: Neither curl nor wget is available."
 	fi
@@ -58,7 +84,7 @@ get_target_triples() {
 	case "$platform" in
 		Darwin)
 			case "$arch" in
-				aarch64 | arm64) targets=("aarch64-apple-darwin") ;; # Rosetta
+				aarch64 | arm64) targets=("aarch64-apple-darwin" "x86_64-apple-darwin") ;; # both because Rosetta
 				x86_64) targets=("x86_64-apple-darwin") ;;
 				*) fail "Incompatible darwin architecture." ;;
 			esac
