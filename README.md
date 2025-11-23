@@ -1,6 +1,6 @@
 <div align="center">
 
-# asdf-NAME ![Test](https://github.com/vic1707/asdf-NAME/workflows/Test/badge.svg) ![Lint](https://github.com/vic1707/asdf-NAME/workflows/Lint/badge.svg)
+# asdf-rust-script ![Test](https://github.com/vic1707/asdf-rust-script/workflows/Test/badge.svg) ![Lint](https://github.com/vic1707/asdf-rust-script/workflows/Lint/badge.svg)
 
 </div>
 
@@ -18,27 +18,27 @@
 
 # Install
 
-You can install this plugin to install [NAME](..) repository.
+You can install this plugin to install [rust-script](https://github.com/fornwall/rust-script) repository.
 The plugin is dynamic, meaning it can be used for multiple tools without needing to hard-code each one.
 
 ```shell
-asdf plugin add NAME https://github.com/vic1707/asdf-NAME.git
+asdf plugin add rust-script https://github.com/vic1707/asdf-rust-script.git
 ```
 
 # Usage
 
 ```shell
 # Show all installable versions
-asdf list-all NAME
+asdf list-all rust-script
 
 # Install specific version
-asdf install NAME latest
+asdf install rust-script latest
 
 # Set a version globally (on your ~/.tool-versions file)
-asdf global NAME latest
+asdf global rust-script latest
 
 # Now your tool's commands are available
-NAME --version
+rust-script --version
 ```
 
 Check [asdf](https://github.com/asdf-vm/asdf) readme for more instructions on how to
@@ -53,7 +53,7 @@ install & manage versions.
 
 Contributions of any kind welcome!
 
-[Thanks goes to these contributors](https://github.com/vic1707/asdf-NAME/graphs/contributors)!
+[Thanks goes to these contributors](https://github.com/vic1707/asdf-rust-script/graphs/contributors)!
 
 # License
 

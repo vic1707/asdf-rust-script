@@ -2,35 +2,39 @@
 
 PLUGIN_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")/.."
 
-# shellcheck disable=SC2317 # export -f makes it reachable by find
+# shellcheck disable=SC2329 # export -f makes it reachable by find
 check_file() {
 	## Taken from https://github.com/asdf-vm/asdf/blob/master/test/banned_commands.bats
 	banned_commands=(
-		# Not POSIX compliant
+		# Process substitution isn't POSIX compliant and cause trouble
 		"<("
-		# Not in POSIX
+		# Command isn't included in the Ubuntu packages asdf depends on. Also not
+		# defined in POSIX
 		column
-		# echo isn't consistent across operating systems
+		# echo isn't consistent across operating systems, and sometimes output can
+		# be confused with echo flags. printf does everything echo does and more.
 		echo
-		# eval == devil
+		# It's best to avoid eval as it makes it easier to accidentally execute
+		# arbitrary strings
 		eval
-		# Not default on OSX
+		# realpath not available by default on OSX.
 		realpath
-		# NotPOSIX compliant
+		# source isn't POSIX compliant. . behaves the same and is POSIX compliant
+		# Except in fish, where . is deprecated, and will be removed in the future.
 		source
-		# [ should be used instead
-		test
+		# For consistency, [ should be used instead. There is a leading space so 'fail_test', etc. is not matched
+		' test'
 		# OSX != Unix
 		"sed.* -i"
 	)
 	banned_commands_regex=(
-		# Invalid on alpine (grep -i)
+		# grep -y does not work on alpine and should be "grep -i" either way
 		"grep.* -y"
-		# Invalid on OSX
+		# grep -P is not a valid option in OSX.
 		"grep.* -P"
 		# Ban grep long commands as they do not work on alpine
 		"grep[^|]+--\w{2,}"
-		# OSX != Unix
+		# readlink -f on OSX behaves differently from readlink -f on other Unix systems
 		'readlink.+-.*f.+["$]'
 		# sort --sort-version isn't supported everywhere
 		"sort.*-V"
@@ -42,10 +46,13 @@ check_file() {
 		# find is better at locating files that are in a certain location or that
 		# match certain filename patterns.
 		# https://github-wiki-see.page/m/koalaman/shellcheck/wiki/SC2012
-		"\bls "
+		'\bls '
 
 		# Ban recursive asdf calls as they are inefficient and may introduce bugs.
-		"\basdf "
+		# If you find yourself needing to invoke an `asdf` command from within
+		# asdf code, please source the appropriate file and invoke the
+		# corresponding function.
+		'\basdf '
 	)
 
 	local file="$1"
