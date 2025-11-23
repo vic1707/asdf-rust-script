@@ -17,6 +17,7 @@ REPO_URL="https://github.com/fornwall/rust-script"
 # Mostly used for rust tools
 dl_link() {
 	RELEASE_BASE_URL="$REPO_URL/releases/download/$ASDF_INSTALL_VERSION"
+	URL=""
 	for triple in $(get_target_triples); do
 		DL_FILE="$TOOL_NAME-$triple.tar.gz"
 		TEST_URL="$RELEASE_BASE_URL/$DL_FILE"
