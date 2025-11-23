@@ -126,5 +126,5 @@ get_target_triples() {
 		*) fail "Incompatible platform." ;;
 	esac
 
-	printf '%s' "${targets[@]}"
+	printf '%s ' "${targets[@]}"
 }
